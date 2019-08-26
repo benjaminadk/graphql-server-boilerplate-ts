@@ -1,0 +1,3 @@
+type Mutation {
+  signin(email: String!, password: String!): [Error!]
+}
