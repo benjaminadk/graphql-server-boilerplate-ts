@@ -1,7 +1,10 @@
 {
   "defaultSeverity": "error",
   "extends": ["tslint:latest", "tslint-config-prettier"],
-  "jsRules": {},
+  "jsRules": {
+    "linebreak-style": false,
+    "comma-dangle": false
+  },
   "rules": {
     "no-console": false,
     "member-access": false,
