@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs'
 import { ResolverMap } from '../../../types/graphql-utils'
 import { User } from '../../../entity/User'
 import { invalidCredentials, confirmEmailError, forgotPasswordLockedError } from './errorMessages'
-import { userSessionIdPrefix } from '../../../services/redis'
+import { userSessionIdPrefix } from '../../../constants'
 
 const errorResponse = [
   {

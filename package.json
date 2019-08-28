@@ -2,6 +2,14 @@
   "name": "graphql-server",
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
+  "author": {
+    "name": "Benjamin Brooke",
+    "url": "https://github.com/benjaminadk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/benjaminadk/graphql-server-boilerplate-ts.git"
+  },
   "devDependencies": {
     "@gql2ts/types": "1.9.0",
     "@types/bcryptjs": "2.4.2",

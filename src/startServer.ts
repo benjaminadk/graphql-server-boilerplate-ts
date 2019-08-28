@@ -7,7 +7,8 @@ import * as RateLimit from 'express-rate-limit'
 import * as RateLimitRedisStore from 'rate-limit-redis'
 import { createTypeormConnection } from './utils/createTypeormConnection'
 import { generateSchema } from './utils/generateSchema'
-import { redis, sessionPrefix } from './services/redis'
+import { redis } from './services/redis'
+import { sessionPrefix, fifteenMinutes, oneWeek } from './constants'
 import { confirmEmail } from './routes/confirmEmail'
 import { createTestConnection } from './testUtils/createTestConnection'
 
@@ -35,7 +36,7 @@ export const startServer = async () => {
       store: new RateLimitRedisStore({
         client: redis
       }),
-      windowMs: 1000 * 60 * 15,
+      windowMs: fifteenMinutes,
       max: 100
     })
   )
@@ -46,14 +47,14 @@ export const startServer = async () => {
         client: redis as any,
         prefix: sessionPrefix
       }),
-      name: process.env.SESSION_NAME,
+      name: 'gsbp',
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 * 7
+        maxAge: oneWeek
       }
     } as any)
   )

@@ -1,14 +1,14 @@
 import { v4 } from 'uuid'
 import { Redis } from 'ioredis'
 import * as nodemailer from 'nodemailer'
-import { forgotPasswordPrefix } from './redis'
+import { forgotPasswordPrefix } from '../constants'
 
 export class EmailService {
   private transporter: nodemailer.Transporter
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
+      host: 'smtp.mailtrap.io',
+      port: 2525,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
