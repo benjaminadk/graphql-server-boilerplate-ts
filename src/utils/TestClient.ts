@@ -17,13 +17,13 @@ export class TestClient {
     }
   }
 
-  async signup(email: string, password: string) {
+  async signup(email: string, name: string, password: string) {
     return rp.post(this.url, {
       ...this.options,
       body: {
         query: ` 
           mutation {
-            signup(email: "${email}", password: "${password}") {
+            signup(email: "${email}", name: "${name}", password: "${password}") {
               path
               message 
             }
@@ -86,6 +86,7 @@ export class TestClient {
           {
             me {
               id
+              name
               email
             }
           }

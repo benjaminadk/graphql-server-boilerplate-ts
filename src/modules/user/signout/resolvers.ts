@@ -8,7 +8,9 @@ export const resolvers: ResolverMap = {
       if (userId) {
         removeAllUserSessions(userId, redis)
         session.destroy(err => {
-          if (err) console.log(err)
+          if (err) {
+            console.log(err)
+          }
         })
         return true
       }

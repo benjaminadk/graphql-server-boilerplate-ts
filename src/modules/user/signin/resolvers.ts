@@ -20,7 +20,9 @@ export const resolvers: ResolverMap = {
     ) => {
       const user = await User.findOne({ where: { email } })
 
-      if (!user) return errorResponse
+      if (!user) {
+        return errorResponse
+      }
 
       if (!user.confirmed) {
         return [
@@ -35,14 +37,16 @@ export const resolvers: ResolverMap = {
         return [
           {
             path: 'email',
-            forgotPasswordLockedError
+            message: forgotPasswordLockedError
           }
         ]
       }
 
-      const valid = bcrypt.compare(password, user.password)
+      const valid = await bcrypt.compare(password, user.password)
 
-      if (!valid) return errorResponse
+      if (!valid) {
+        return errorResponse
+      }
 
       session.userId = user.id
       if (request.sessionID) {

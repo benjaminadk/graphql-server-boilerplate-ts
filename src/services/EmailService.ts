@@ -4,9 +4,9 @@ import * as nodemailer from 'nodemailer'
 import { forgotPasswordPrefix } from './redis'
 
 export class EmailService {
-  private _transporter: nodemailer.Transporter
+  private transporter: nodemailer.Transporter
   constructor() {
-    this._transporter = nodemailer.createTransport({
+    this.transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: Number(process.env.EMAIL_PORT),
       auth: {
@@ -47,8 +47,7 @@ export class EmailService {
       }
     }
 
-    const res = await this._transporter.sendMail(options)
-    console.log(res)
+    await this.transporter.sendMail(options)
   }
 
   async createConfirmLink(url: string, userId: string, redis: Redis) {

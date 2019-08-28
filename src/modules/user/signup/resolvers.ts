@@ -1,3 +1,4 @@
+import * as open from 'open'
 import { ResolverMap } from '../../../types/graphql-utils'
 import { User } from '../../../entity/User'
 import { validator } from './validator'
@@ -14,7 +15,7 @@ export const resolvers: ResolverMap = {
         return formatYupError(err)
       }
 
-      const { email, password } = args
+      const { email, name, password } = args
 
       const userExists = await User.findOne({
         where: { email },
@@ -30,13 +31,19 @@ export const resolvers: ResolverMap = {
         ]
       }
 
-      const user = User.create({ email, password })
+      const user = User.create({ email, name, password })
 
       await user.save()
 
-      const emailService = new EmailService()
-      const link = await emailService.createConfirmLink(url, user.id, redis)
-      await emailService.sendMail('confirm', user.email, link)
+      if (process.env.NODE_ENV !== 'test') {
+        const emailService = new EmailService()
+        const link = await emailService.createConfirmLink(url, user.id, redis)
+        await emailService.sendMail('confirm', user.email, link)
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        await open(process.env.EMAIL_INBOX as string)
+      }
 
       return null
     }
