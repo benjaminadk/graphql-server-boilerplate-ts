@@ -11,7 +11,7 @@ npm install
 ```
 
 - Start PostgreSQL
-- create user & database per [ormconfig.json](https://github.com/benjaminadk/graphql-server-boilerplate-ts/blob/master/ormconfig.json) or change settings to suit needs
+- Create user & databases per [ormconfig.json](https://github.com/benjaminadk/graphql-server-boilerplate-ts/blob/master/ormconfig.json) or change settings to suit needs
 - Start Redis
 - Create environment variables file in project root
 - Setup for [Mailtrap](https://mailtrap.io/) but can work with any email service
