@@ -1,16 +1,18 @@
+require('dotenv-safe').config()
 import 'reflect-metadata'
-import 'dotenv/config'
-import { GraphQLServer } from 'graphql-yoga'
-import * as session from 'express-session'
-import * as connectRedis from 'connect-redis'
-import * as RateLimit from 'express-rate-limit'
-import * as RateLimitRedisStore from 'rate-limit-redis'
-import { createTypeormConnection } from './utils/createTypeormConnection'
-import { generateSchema } from './utils/generateSchema'
-import { redis } from './services/redis'
+import express from 'express'
+import { ApolloServer } from 'apollo-server-express'
+import session from 'express-session'
+import connectRedis from 'connect-redis'
+import RateLimit from 'express-rate-limit'
+import RateLimitRedisStore from 'rate-limit-redis'
+
+import { connectTypeorm } from './utils/connectTypeorm'
+import { genSchema } from './utils/genSchema'
+import { redis } from './redis'
 import { sessionPrefix, fifteenMinutes, oneWeek } from './constants'
 import { confirmEmail } from './routes/confirmEmail'
-import { createTestConnection } from './testUtils/createTestConnection'
+import { connectTest } from './testUtils/connectTest'
 
 const RedisStore = connectRedis(session as any)
 
@@ -19,19 +21,20 @@ export const startServer = async () => {
     await redis.flushall()
   }
 
-  const server = new GraphQLServer({
-    schema: generateSchema() as any,
-    context: ({ request }) => {
-      return {
-        redis,
-        url: request.protocol + '://' + request.get('host'),
-        session: request.session,
-        request
-      }
-    }
+  const app = express()
+
+  const server = new ApolloServer({
+    schema: genSchema() as any,
+    context: ({ req, res }) => ({
+      redis,
+      url: req ? req.protocol + '://' + req.get('host') : '',
+      session: req.session,
+      req,
+      res
+    })
   })
 
-  server.express.use(
+  app.use(
     new RateLimit({
       store: new RateLimitRedisStore({
         client: redis
@@ -41,7 +44,7 @@ export const startServer = async () => {
     })
   )
 
-  server.express.use(
+  app.use(
     session({
       store: new RedisStore({
         client: redis as any,
@@ -59,23 +62,22 @@ export const startServer = async () => {
     } as any)
   )
 
-  server.express.get('/confirm/:id', confirmEmail)
+  app.get('/confirm/:id', confirmEmail)
 
   if (process.env.NODE_ENV === 'test') {
-    await createTestConnection(true)
+    await connectTest(true)
   } else {
-    await createTypeormConnection()
+    await connectTypeorm()
   }
 
-  const app = await server.start({
-    port: process.env.NODE_ENV === 'test' ? 0 : process.env.PORT,
-    cors: {
-      origin: process.env.NODE_ENV === 'test' ? '*' : (process.env.FRONTEND as string),
-      credentials: true
-    }
-  })
+  const port = process.env.NODE_ENV === 'test' ? 0 : process.env.PORT
+  const path = '/'
+  const cors = {
+    origin: process.env.NODE_ENV === 'test' ? '*' : (process.env.FRONTEND as string),
+    credentials: true
+  }
 
-  console.log(`Server listening on http://localhost:${process.env.PORT}`)
+  server.applyMiddleware({ app, cors, path })
 
-  return app
+  return app.listen(port, () => console.log(`Server listening at http://localhost:${port}`))
 }

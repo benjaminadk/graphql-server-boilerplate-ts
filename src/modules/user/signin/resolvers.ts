@@ -1,7 +1,8 @@
-import * as bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs'
+
 import { ResolverMap } from '../../../types/graphql-utils'
 import { User } from '../../../entity/User'
-import { invalidCredentials, confirmEmailError, forgotPasswordLockedError } from './errorMessages'
+import { invalidCredentials, confirmEmail, lockedAccount } from './errorMessages'
 import { userSessionIdPrefix } from '../../../constants'
 
 const errorResponse = [
@@ -13,11 +14,7 @@ const errorResponse = [
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    signin: async (
-      _,
-      { email, password }: GQL.ISigninOnMutationArguments,
-      { session, redis, request }
-    ) => {
+    signin: async (_, { email, password }, { session, redis, req }) => {
       const user = await User.findOne({ where: { email } })
 
       if (!user) {
@@ -28,7 +25,7 @@ export const resolvers: ResolverMap = {
         return [
           {
             path: 'email',
-            message: confirmEmailError
+            message: confirmEmail
           }
         ]
       }
@@ -37,7 +34,7 @@ export const resolvers: ResolverMap = {
         return [
           {
             path: 'email',
-            message: forgotPasswordLockedError
+            message: lockedAccount
           }
         ]
       }
@@ -49,8 +46,8 @@ export const resolvers: ResolverMap = {
       }
 
       session.userId = user.id
-      if (request.sessionID) {
-        await redis.lpush(`${userSessionIdPrefix}${user.id}`, request.sessionID)
+      if (req.sessionID) {
+        await redis.lpush(`${userSessionIdPrefix}${user.id}`, req.sessionID)
       }
 
       return null

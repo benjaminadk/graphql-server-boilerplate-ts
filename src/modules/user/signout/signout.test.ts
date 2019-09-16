@@ -1,18 +1,20 @@
-import * as faker from 'faker'
+import faker from 'faker'
 import { Connection } from 'typeorm'
+
 import { User } from '../../../entity/User'
 import { TestClient } from '../../../utils/TestClient'
-import { createTestConnection } from '../../../testUtils/createTestConnection'
+import { connectTest } from '../../../testUtils/connectTest'
 
-let conn: Connection
 faker.seed(Date.now())
 const email = faker.internet.email()
 const name = faker.internet.userName()
 const password = faker.internet.password()
 
 let userId: string
+let conn: Connection
+
 beforeAll(async () => {
-  conn = await createTestConnection()
+  conn = await connectTest()
   const user = await User.create({
     email,
     name,
@@ -28,9 +30,7 @@ afterAll(async () => {
 
 describe('signout', () => {
   test('multiple sessions', async () => {
-    // computer 1
     const sess1 = new TestClient(process.env.TEST_HOST as string)
-    // computer 2
     const sess2 = new TestClient(process.env.TEST_HOST as string)
 
     await sess1.signin(email, password)

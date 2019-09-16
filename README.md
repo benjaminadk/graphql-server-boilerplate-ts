@@ -17,17 +17,6 @@ npm install
 - Setup for [Mailtrap](https://mailtrap.io/) but can work with any email service
 - Uses [open](https://www.npmjs.com/package/open) to open inbox in development when confirmation email is sent
 
-## Environment Variables
-
-|      Key       |         Value         |
-| :------------: | :-------------------: |
-|  EMAIL_INBOX   | url to mailtrap inbox |
-|   EMAIL_PASS   |   mailtrap password   |
-|   EMAIL_USER   |   mailtrap username   |
-|    FRONTEND    |    url of frontend    |
-|      PORT      |  port number backend  |
-| SESSION_SECRET |    session secret     |
-
 ## Acknowledgements
 
 Based on [benawad/graphql-ts-server-boilerplate](https://github.com/benawad/graphql-ts-server-boilerplate)

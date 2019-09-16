@@ -1,3 +1,3 @@
 export const invalidCredentials = 'invalid credentials'
-export const confirmEmailError = 'please confirm your email'
-export const forgotPasswordLockedError = 'account is locked'
+export const confirmEmail = 'please confirm your email'
+export const lockedAccount = 'account is locked'

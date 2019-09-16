@@ -1,26 +1,21 @@
 import { Connection } from 'typeorm'
-import * as faker from 'faker'
+import faker from 'faker'
+
 import { User } from '../../../entity/User'
-import {
-  duplicateEmail,
-  emailNotLongEnough,
-  nameNotLongEnough,
-  invalidEmail,
-  passwordNotLongEnough
-} from './errorMessages'
+import { duplicateEmail, invalidEmail, emailMin, nameMin, passwordMin } from './errorMessages'
 import { TestClient } from '../../../utils/TestClient'
-import { createTestConnection } from '../../../testUtils/createTestConnection'
+import { connectTest } from '../../../testUtils/connectTest'
+
+const client = new TestClient(process.env.TEST_HOST as string)
 
 faker.seed(Date.now())
 const email = faker.internet.email()
 const name = faker.internet.userName()
 const password = faker.internet.password()
 
-const client = new TestClient(process.env.TEST_HOST as string)
-
 let conn: Connection
 beforeAll(async () => {
-  conn = await createTestConnection()
+  conn = await connectTest()
 })
 afterAll(async () => {
   conn.close()
@@ -51,7 +46,7 @@ describe('signup user', () => {
       signup: [
         {
           path: 'email',
-          message: emailNotLongEnough
+          message: emailMin
         },
         {
           path: 'email',
@@ -73,7 +68,7 @@ describe('signup user', () => {
       signup: [
         {
           path: 'name',
-          message: nameNotLongEnough
+          message: nameMin
         }
       ]
     })
@@ -85,7 +80,7 @@ describe('signup user', () => {
       signup: [
         {
           path: 'password',
-          message: passwordNotLongEnough
+          message: passwordMin
         }
       ]
     })
@@ -97,7 +92,7 @@ describe('signup user', () => {
       signup: [
         {
           path: 'email',
-          message: emailNotLongEnough
+          message: emailMin
         },
         {
           path: 'email',
@@ -105,11 +100,11 @@ describe('signup user', () => {
         },
         {
           path: 'name',
-          message: nameNotLongEnough
+          message: nameMin
         },
         {
           path: 'password',
-          message: passwordNotLongEnough
+          message: passwordMin
         }
       ]
     })

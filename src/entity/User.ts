@@ -5,9 +5,9 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert } from
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid') id: string
 
-  @Column('varchar', { length: 255 }) email: string
+  @Column('varchar', { length: 128 }) email: string
 
-  @Column('varchar', { length: 255 }) name: string
+  @Column('varchar', { length: 128 }) name: string
 
   @Column('text') password: string
 

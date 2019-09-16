@@ -21,7 +21,7 @@
     "@types/glob": "7.1.1",
     "@types/ioredis": "4.0.15",
     "@types/jest": "24.0.18",
-    "@types/node": "^8.0.29",
+    "@types/node": "8.10.54",
     "@types/node-fetch": "2.5.0",
     "@types/nodemailer": "6.2.1",
     "@types/request-promise": "4.1.44",
@@ -37,19 +37,18 @@
   },
   "dependencies": {
     "@gql2ts/from-schema": "1.10.1",
+    "apollo-server-express": "2.9.3",
     "bcryptjs": "2.4.3",
-    "body-parser": "^1.18.1",
     "connect-redis": "3.4.2",
     "cross-env": "5.2.0",
-    "dotenv": "8.1.0",
-    "express": "^4.15.4",
+    "dotenv-safe": "8.1.0",
+    "express": "4.17.1",
     "express-rate-limit": "5.0.0",
     "express-session": "1.16.2",
     "faker": "4.1.0",
     "glob": "7.1.4",
     "graphql": "14.5.0",
     "graphql-tools": "4.0.5",
-    "graphql-yoga": "1.18.2",
     "ioredis": "4.14.0",
     "merge-graphql-schemas": "1.7.0",
     "node-fetch": "2.6.0",
@@ -60,29 +59,13 @@
     "reflect-metadata": "^0.1.10",
     "request-promise": "4.2.4",
     "typeorm": "0.2.18",
-    "typescript-tslint-plugin": "0.5.4",
     "uuid": "3.3.3",
     "yup": "0.27.0"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon --exec ts-node src/index.ts",
-    "generate-types": "ts-node src/scripts/generateTypes.ts",
+    "gen:types": "ts-node src/scripts/genTypes.ts",
     "test": "cross-env NODE_ENV=test jest --watch",
     "coverage": "cross-env NODE_ENV=test jest --coverage"
-  },
-  "jest": {
-    "globalSetup": "./src/testUtils/callSetup.js",
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
   }
 }

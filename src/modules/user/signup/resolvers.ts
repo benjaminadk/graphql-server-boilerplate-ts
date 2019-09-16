@@ -1,16 +1,18 @@
-import * as open from 'open'
+import open from 'open'
+
 import { ResolverMap } from '../../../types/graphql-utils'
 import { User } from '../../../entity/User'
-import { validator } from './validator'
+import { signupSchema } from './signupSchema'
 import { formatYupError } from '../../../utils/formatYupError'
 import { duplicateEmail } from './errorMessages'
-import { EmailService } from '../../../services/EmailService'
+import { sendEmail } from '../../../utils/sendEmail'
+import { createConfirmLink } from './createConfirmLink'
 
 export const resolvers: ResolverMap = {
   Mutation: {
     signup: async (_, args: GQL.ISignupOnMutationArguments, { redis, url }) => {
       try {
-        await validator.validate(args, { abortEarly: false })
+        await signupSchema.validate(args, { abortEarly: false })
       } catch (err) {
         return formatYupError(err)
       }
@@ -36,9 +38,7 @@ export const resolvers: ResolverMap = {
       await user.save()
 
       if (process.env.NODE_ENV !== 'test') {
-        const emailService = new EmailService()
-        const link = await emailService.createConfirmLink(url, user.id, redis)
-        await emailService.sendMail('confirm', user.email, link)
+        await sendEmail(user.email, 'Confirm Email', await createConfirmLink(url, user.id, redis))
       }
 
       if (process.env.NODE_ENV === 'development') {

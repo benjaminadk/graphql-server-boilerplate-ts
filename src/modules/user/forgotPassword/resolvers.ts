@@ -1,10 +1,12 @@
-import * as bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs'
+
 import { ResolverMap } from '../../../types/graphql-utils'
 import { User } from '../../../entity/User'
-import { forgotPasswordLockAccount } from '../../../utils/forgotPasswordLockAccount'
-import { EmailService } from '../../../services/EmailService'
+import { lockAccount } from './lockAccount'
+import { sendEmail } from '../../../utils/sendEmail'
+import { createForgotPasswordLink } from './createForgotPasswordLink'
 import { forgotPasswordPrefix } from '../../../constants'
-import { validator } from './validator'
+import { forgotPasswordSchema } from './forgotPasswordSchema'
 import { expiredKey, userNotFound } from './errorMessages'
 import { formatYupError } from '../../../utils/formatYupError'
 
@@ -17,12 +19,14 @@ export const resolvers: ResolverMap = {
         return [{ path: 'email', message: userNotFound }]
       }
 
-      await forgotPasswordLockAccount(user.id, redis)
+      await lockAccount(user.id, redis)
       // TODO add frontend url
 
-      const emailService = new EmailService()
-      const link = await emailService.createForgotPasswordLink(url, user.id, redis)
-      await emailService.sendMail('change password', user.email, link)
+      await sendEmail(
+        user.email,
+        'Change Password',
+        await createForgotPasswordLink(url, user.id, redis)
+      )
 
       return true
     },
@@ -42,7 +46,7 @@ export const resolvers: ResolverMap = {
       }
 
       try {
-        await validator.validate({ newPassword }, { abortEarly: false })
+        await forgotPasswordSchema.validate({ newPassword }, { abortEarly: false })
       } catch (err) {
         return formatYupError(err)
       }

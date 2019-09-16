@@ -1,8 +1,7 @@
 import { startServer } from '../startServer'
-import { AddressInfo } from 'dgram'
 
 export const setup = async () => {
-  const app = await startServer()
-  const { port } = app.address() as AddressInfo
+  const listener = await startServer()
+  const { port } = listener.address()
   process.env.TEST_HOST = `http://127.0.0.1:${port}`
 }

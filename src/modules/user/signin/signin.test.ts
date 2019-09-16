@@ -1,10 +1,10 @@
 import { Connection } from 'typeorm'
-import * as faker from 'faker'
+import faker from 'faker'
 
-import { invalidCredentials, confirmEmailError } from './errorMessages'
+import { invalidCredentials, confirmEmail } from './errorMessages'
 import { User } from '../../../entity/User'
 import { TestClient } from '../../../utils/TestClient'
-import { createTestConnection } from '../../../testUtils/createTestConnection'
+import { connectTest } from '../../../testUtils/connectTest'
 
 faker.seed(Date.now())
 const email = faker.internet.email()
@@ -15,7 +15,7 @@ const client = new TestClient(process.env.TEST_HOST as string)
 
 let conn: Connection
 beforeAll(async () => {
-  conn = await createTestConnection()
+  conn = await connectTest()
 })
 afterAll(async () => {
   conn.close()
@@ -42,7 +42,7 @@ describe('signin', () => {
   test('email not confirmed', async () => {
     await client.signup(email, name, password)
 
-    await signinExpectError(email, password, confirmEmailError)
+    await signinExpectError(email, password, confirmEmail)
 
     await User.update({ email }, { confirmed: true })
 
