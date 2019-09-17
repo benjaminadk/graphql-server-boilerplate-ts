@@ -10,7 +10,7 @@ import { createConfirmLink } from './createConfirmLink'
 
 export const resolvers: ResolverMap = {
   Mutation: {
-    signup: async (_, args: GQL.ISignupOnMutationArguments, { redis, url }) => {
+    signup: async (_, args, { redis, url }) => {
       try {
         await signupSchema.validate(args, { abortEarly: false })
       } catch (err) {
