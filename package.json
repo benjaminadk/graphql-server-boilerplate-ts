@@ -51,7 +51,7 @@
     "graphql-tools": "4.0.5",
     "ioredis": "4.14.0",
     "merge-graphql-schemas": "1.7.0",
-    "node-fetch": "2.6.0",
+    "node-fetch": "2.6.1",
     "nodemailer": "6.3.0",
     "open": "6.4.0",
     "pg": "^7.3.0",
